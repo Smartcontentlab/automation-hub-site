@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE `generations` MODIFY COLUMN `type` enum('cold_email','knowledge_base','proposal','objection_handler','follow_up','onboarding') NOT NULL;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user WQncJEjJmTGfast.b72d3f064afe --database b2Fg7WWZeG9q6DRtw9P2Lv --execute ALTER TABLE `generations` MODIFY COLUMN `type` enum('cold_email','knowledge_base','proposal','objection_handler','follow_up','onboarding') NOT NULL;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 209
+}

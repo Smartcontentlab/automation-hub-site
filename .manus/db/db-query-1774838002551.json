@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE `generations` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`userId` int NOT NULL,\n\t`type` enum('cold_email','knowledge_base','proposal') NOT NULL,\n\t`businessName` varchar(255),\n\t`niche` varchar(255),\n\t`websiteUrl` varchar(512),\n\t`inputData` text,\n\t`outputContent` text NOT NULL,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\tCONSTRAINT `generations_id` PRIMARY KEY(`id`)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user WQncJEjJmTGfast.b72d3f064afe --database b2Fg7WWZeG9q6DRtw9P2Lv --execute CREATE TABLE `generations` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`userId` int NOT NULL,\n\t`type` enum('cold_email','knowledge_base','proposal') NOT NULL,\n\t`businessName` varchar(255),\n\t`niche` varchar(255),\n\t`websiteUrl` varchar(512),\n\t`inputData` text,\n\t`outputContent` text NOT NULL,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\tCONSTRAINT `generations_id` PRIMARY KEY(`id`)\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 165
+}

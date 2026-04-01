@@ -1,0 +1,1 @@
+ALTER TABLE `generations` MODIFY COLUMN `type` enum('cold_email','knowledge_base','proposal','objection_handler','follow_up','onboarding') NOT NULL;
