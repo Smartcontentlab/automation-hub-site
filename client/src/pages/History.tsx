@@ -8,10 +8,12 @@ import { toast } from "sonner";
 
 type GenerationType = "cold_email" | "knowledge_base" | "proposal";
 
-const TYPE_CONFIG: Record<GenerationType, { label: string; icon: React.ElementType; color: string; bg: string }> = {
-  cold_email: { label: "Cold Email", icon: Mail, color: "text-blue-400", bg: "bg-blue-400/10 border-blue-400/25" },
-  knowledge_base: { label: "Knowledge Base", icon: Bot, color: "text-violet-400", bg: "bg-violet-400/10 border-violet-400/25" },
-  proposal: { label: "Proposal", icon: FileText, color: "text-emerald-400", bg: "bg-emerald-400/10 border-emerald-400/25" },
+// Desaturated chart tokens instead of raw Tailwind rainbow colors — consistent
+// with the single-accent system rather than one loud color per type.
+const TYPE_CONFIG: Record<GenerationType, { label: string; icon: React.ElementType; chart: string }> = {
+  cold_email: { label: "Cold Email", icon: Mail, chart: "var(--chart-1)" },
+  knowledge_base: { label: "Knowledge Base", icon: Bot, chart: "var(--chart-2)" },
+  proposal: { label: "Proposal", icon: FileText, chart: "var(--chart-3)" },
 };
 
 export default function History() {
@@ -41,14 +43,14 @@ export default function History() {
 
   return (
     <AppLayout>
-      <div className="p-6 lg:p-8 max-w-4xl mx-auto">
+      <div className="p-6 lg:p-10 max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-9 h-9 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center">
-            <Clock className="w-5 h-5 text-amber-400" />
+          <div className="w-9 h-9 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+            <Clock className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">Generation History</h1>
+            <h1 className="font-display text-xl font-semibold tracking-tight text-foreground">Generation History</h1>
             <p className="text-xs text-muted-foreground">All your previously generated content — click any item to expand and copy.</p>
           </div>
         </div>
@@ -84,14 +86,16 @@ export default function History() {
 
         {/* Content */}
         {isLoading && (
-          <div className="flex items-center justify-center py-16">
-            <Loader2 className="w-6 h-6 text-primary animate-spin" />
+          <div className="space-y-3">
+            {[0, 1, 2, 3].map(i => (
+              <div key={i} className="h-16 rounded-2xl border border-border bg-card animate-pulse" />
+            ))}
           </div>
         )}
 
         {!isLoading && filtered.length === 0 && (
-          <div className="text-center py-16 rounded-xl border border-dashed border-border">
-            <Clock className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+          <div className="text-center py-16 rounded-2xl border border-dashed border-border">
+            <Clock className="w-8 h-8 text-muted-foreground/50 mx-auto mb-3" />
             <p className="text-sm text-muted-foreground">
               {history?.length === 0 ? "No generations yet. Use a tool above to get started." : "No results match your search."}
             </p>
@@ -106,14 +110,17 @@ export default function History() {
             const isOpen = expanded === item.id;
 
             return (
-              <div key={item.id} className="rounded-xl border border-border bg-card overflow-hidden">
+              <div key={item.id} className="rounded-2xl border border-border bg-card overflow-hidden">
                 {/* Row header */}
                 <div
                   className="flex items-center gap-3 px-4 py-3.5 cursor-pointer hover:bg-muted/20 transition-colors"
                   onClick={() => setExpanded(isOpen ? null : item.id)}
                 >
-                  <div className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 ${config.bg}`}>
-                    <Icon className={`w-3.5 h-3.5 ${config.color}`} />
+                  <div
+                    className="w-7 h-7 rounded-lg border flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: `color-mix(in oklch, ${config.chart} 15%, transparent)`, borderColor: `color-mix(in oklch, ${config.chart} 30%, transparent)` }}
+                  >
+                    <Icon className="w-3.5 h-3.5" style={{ color: config.chart }} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -121,11 +128,14 @@ export default function History() {
                         {item.businessName ?? "Proposal"}
                         {item.niche ? ` — ${item.niche}` : ""}
                       </span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full border ${config.bg} ${config.color}`}>
+                      <span
+                        className="text-xs px-2 py-0.5 rounded-full border"
+                        style={{ backgroundColor: `color-mix(in oklch, ${config.chart} 12%, transparent)`, borderColor: `color-mix(in oklch, ${config.chart} 30%, transparent)`, color: config.chart }}
+                      >
                         {config.label}
                       </span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">
+                    <p className="text-xs text-muted-foreground mt-0.5 font-mono-figures">
                       {new Date(item.createdAt).toLocaleString()}
                     </p>
                   </div>
