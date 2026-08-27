@@ -12,15 +12,20 @@ const TYPE_LABELS: Record<string, string> = {
   onboarding: "Onboarding",
 };
 
-const TYPE_COLORS: Record<string, string> = {
-  cold_email: "bg-blue-400",
-  knowledge_base: "bg-violet-400",
-  proposal: "bg-emerald-400",
-  objection_handler: "bg-yellow-400",
-  follow_up: "bg-indigo-400",
-  onboarding: "bg-teal-400",
+// Restrained chart-token dots instead of raw Tailwind rainbow colors —
+// low visual weight, still scannable, doesn't compete with the single accent.
+const TYPE_DOT: Record<string, string> = {
+  cold_email: "bg-[var(--chart-1)]",
+  knowledge_base: "bg-[var(--chart-2)]",
+  proposal: "bg-[var(--chart-3)]",
+  objection_handler: "bg-[var(--chart-4)]",
+  follow_up: "bg-[var(--chart-5)]",
+  onboarding: "bg-[var(--chart-2)]",
 };
 
+// Bento spans: first item in each section is featured (wider). Neutral icon
+// chip by default — the single accent color is reserved for the featured
+// card and for hover state, not one color per tool.
 const toolSections = [
   {
     label: "Outreach Tools",
@@ -30,24 +35,19 @@ const toolSections = [
         icon: Mail,
         label: "Cold Email Generator",
         description: "Generate personalized outreach emails for any local business. Supports bulk mode for up to 20 businesses at once.",
-        color: "text-blue-400",
-        bg: "bg-blue-400/10 border-blue-400/20",
+        featured: true,
       },
       {
         href: "/follow-up",
         icon: Mail,
         label: "Follow-Up Sequence",
         description: "Generate a 3-email follow-up sequence for prospects who did not respond to your initial pitch.",
-        color: "text-indigo-400",
-        bg: "bg-indigo-400/10 border-indigo-400/20",
       },
       {
         href: "/objection-handler",
         icon: ShieldCheck,
         label: "Objection Handler",
-        description: "Turn any sales objection into a confident, empathetic rebuttal script you can use on calls or in emails.",
-        color: "text-yellow-400",
-        bg: "bg-yellow-400/10 border-yellow-400/20",
+        description: "Turn any sales objection into a confident, empathetic rebuttal script for calls or emails.",
       },
     ],
   },
@@ -59,24 +59,19 @@ const toolSections = [
         icon: Bot,
         label: "Knowledge Base Generator",
         description: "Auto-generate a complete chatbot system prompt, 15 FAQs, and lead qualification flow. Export as PDF.",
-        color: "text-violet-400",
-        bg: "bg-violet-400/10 border-violet-400/20",
+        featured: true,
       },
       {
         href: "/proposal",
         icon: FileText,
         label: "Proposal Writer",
         description: "Paste a job description from Upwork or Fiverr and get a winning, structured proposal instantly.",
-        color: "text-emerald-400",
-        bg: "bg-emerald-400/10 border-emerald-400/20",
       },
       {
         href: "/onboarding",
         icon: ClipboardList,
         label: "Onboarding Checklist",
-        description: "Generate a step-by-step client onboarding document with phases, info tables, and maintenance tasks. Export as PDF.",
-        color: "text-teal-400",
-        bg: "bg-teal-400/10 border-teal-400/20",
+        description: "Generate a step-by-step client onboarding document with phases, info tables, and maintenance tasks.",
       },
     ],
   },
@@ -88,23 +83,19 @@ const toolSections = [
         icon: Library,
         label: "Niche Templates Library",
         description: "Pre-built system prompts, FAQs, and lead flows for Dental, Real Estate, Plumber, HVAC, and Med Spa.",
-        color: "text-primary",
-        bg: "bg-primary/10 border-primary/20",
       },
       {
         href: "/history",
         icon: Clock,
         label: "Generation History",
         description: "Browse all previously generated content with search, filter by type, and one-click copy.",
-        color: "text-amber-400",
-        bg: "bg-amber-400/10 border-amber-400/20",
       },
     ],
   },
 ];
 
 export default function Dashboard() {
-  const { data: history } = trpc.history.list.useQuery();
+  const { data: history, isLoading } = trpc.history.list.useQuery();
 
   const counts = {
     cold_email: history?.filter(h => h.type === "cold_email").length ?? 0,
@@ -115,51 +106,78 @@ export default function Dashboard() {
 
   return (
     <AppLayout>
-      <div className="p-6 lg:p-8 max-w-5xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-9 h-9 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center">
-              <Zap className="w-5 h-5 text-primary" />
+      <div className="p-6 lg:p-10 max-w-6xl mx-auto">
+        {/* Header — left-aligned, asymmetric; not centered */}
+        <div className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-9 h-9 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center">
+                <Zap className="w-5 h-5 text-primary" />
+              </div>
+              <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground/70">Automation Hub</span>
             </div>
-            <h1 className="text-2xl font-bold text-foreground">Automation Hub</h1>
+            <h1 className="font-display text-3xl sm:text-4xl font-semibold tracking-tight text-foreground">
+              The agency, running itself.
+            </h1>
+            <p className="text-muted-foreground text-sm mt-2 max-w-md">
+              Cold outreach, client work, and resources — everything it takes to run a chatbot services agency, in one console.
+            </p>
           </div>
-          <p className="text-muted-foreground text-sm ml-12">
-            Your complete AI-powered toolkit for running a chatbot services agency from scratch.
-          </p>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
+        {/* Stats — single row data-stream, mono figures */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px rounded-2xl border border-border bg-border overflow-hidden mb-12">
           {[
-            { label: "Total Generated", value: counts.total, icon: TrendingUp, color: "text-primary" },
-            { label: "Cold Emails", value: counts.cold_email, icon: Mail, color: "text-blue-400" },
-            { label: "Knowledge Bases", value: counts.knowledge_base, icon: Bot, color: "text-violet-400" },
-            { label: "Proposals", value: counts.proposal, icon: FileText, color: "text-emerald-400" },
-          ].map(({ label, value, icon: Icon, color }) => (
-            <div key={label} className="rounded-xl border border-border bg-card p-4">
-              <div className="flex items-center justify-between mb-2">
+            { label: "Total Generated", value: counts.total, icon: TrendingUp },
+            { label: "Cold Emails", value: counts.cold_email, icon: Mail },
+            { label: "Knowledge Bases", value: counts.knowledge_base, icon: Bot },
+            { label: "Proposals", value: counts.proposal, icon: FileText },
+          ].map(({ label, value, icon: Icon }) => (
+            <div key={label} className="bg-card p-5">
+              <div className="flex items-center justify-between mb-3">
                 <span className="text-xs text-muted-foreground">{label}</span>
-                <Icon className={`w-4 h-4 ${color}`} />
+                <Icon className="w-4 h-4 text-muted-foreground/60" />
               </div>
-              <p className="text-2xl font-bold text-foreground">{value}</p>
+              {isLoading ? (
+                <div className="h-8 w-12 rounded bg-muted animate-pulse" />
+              ) : (
+                <p className="font-mono-figures text-3xl font-semibold text-foreground">{value}</p>
+              )}
             </div>
           ))}
         </div>
 
-        {/* Tool sections */}
-        <div className="space-y-8">
+        {/* Tool sections — asymmetric bento, first card featured/wider */}
+        <div className="space-y-10">
           {toolSections.map(section => (
             <div key={section.label}>
-              <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">{section.label}</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {section.tools.map(({ href, icon: Icon, label, description, color, bg }) => (
-                  <Link key={href} href={href}>
-                    <div className="group rounded-xl border border-border bg-card p-5 hover:border-primary/30 hover:bg-card/80 transition-all cursor-pointer h-full">
-                      <div className={`w-10 h-10 rounded-lg border flex items-center justify-center mb-4 ${bg}`}>
-                        <Icon className={`w-5 h-5 ${color}`} />
+              <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">{section.label}</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
+                {section.tools.map(({ href, icon: Icon, label, description, featured }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={featured ? "sm:col-span-3" : "sm:col-span-3 lg:col-span-2"}
+                  >
+                    <div
+                      className={`group rounded-2xl border p-6 transition-all cursor-pointer h-full ${
+                        featured
+                          ? "border-primary/25 bg-gradient-to-br from-primary/[0.07] to-transparent hover:border-primary/40"
+                          : "border-border bg-card hover:border-foreground/20"
+                      }`}
+                    >
+                      <div
+                        className={`w-10 h-10 rounded-lg border flex items-center justify-center mb-5 transition-colors ${
+                          featured
+                            ? "bg-primary/15 border-primary/25"
+                            : "bg-secondary border-border group-hover:border-foreground/20"
+                        }`}
+                      >
+                        <Icon className={`w-5 h-5 ${featured ? "text-primary" : "text-foreground/70"}`} />
                       </div>
-                      <h3 className="font-semibold text-foreground text-sm mb-1.5 group-hover:text-primary transition-colors">{label}</h3>
+                      <h3 className="font-display font-semibold text-foreground text-[0.95rem] mb-2 tracking-tight group-hover:text-primary transition-colors">
+                        {label}
+                      </h3>
                       <p className="text-xs text-muted-foreground leading-relaxed">{description}</p>
                     </div>
                   </Link>
@@ -170,27 +188,48 @@ export default function Dashboard() {
         </div>
 
         {/* Recent activity */}
-        {history && history.length > 0 && (
-          <div className="mt-10">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Recent Activity</h2>
+        <div className="mt-12">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Recent Activity</h2>
+            {history && history.length > 0 && (
               <Link href="/history" className="text-xs text-primary hover:underline">View all</Link>
+            )}
+          </div>
+
+          {isLoading && (
+            <div className="space-y-2">
+              {[0, 1, 2].map(i => (
+                <div key={i} className="h-12 rounded-lg border border-border bg-card animate-pulse" />
+              ))}
             </div>
+          )}
+
+          {!isLoading && (!history || history.length === 0) && (
+            <div className="rounded-2xl border border-dashed border-border p-10 text-center">
+              <Clock className="w-6 h-6 text-muted-foreground/50 mx-auto mb-3" />
+              <p className="text-sm text-foreground font-medium mb-1">Nothing generated yet</p>
+              <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+                Run any tool above — your first cold email, proposal, or knowledge base will show up here.
+              </p>
+            </div>
+          )}
+
+          {!isLoading && history && history.length > 0 && (
             <div className="space-y-2">
               {history.slice(0, 5).map(item => (
                 <div key={item.id} className="flex items-center gap-3 px-4 py-3 rounded-lg border border-border bg-card">
-                  <div className={`w-2 h-2 rounded-full shrink-0 ${TYPE_COLORS[item.type] ?? "bg-muted-foreground"}`} />
+                  <div className={`w-2 h-2 rounded-full shrink-0 ${TYPE_DOT[item.type] ?? "bg-muted-foreground"}`} />
                   <span className="text-sm text-foreground truncate flex-1">
                     {item.businessName ?? "Untitled"} — {TYPE_LABELS[item.type] ?? item.type}
                   </span>
-                  <span className="text-xs text-muted-foreground shrink-0">
+                  <span className="text-xs text-muted-foreground shrink-0 font-mono-figures">
                     {new Date(item.createdAt).toLocaleDateString()}
                   </span>
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </AppLayout>
   );
