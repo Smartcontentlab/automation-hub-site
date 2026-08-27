@@ -54,8 +54,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
-          <Zap className="w-8 h-8 text-primary animate-pulse" />
-          <p className="text-muted-foreground text-sm">Loading...</p>
+          <div className="w-9 h-9 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center animate-pulse">
+            <Zap className="w-4 h-4 text-primary" />
+          </div>
+          <p className="text-muted-foreground text-sm font-display">Loading workspace…</p>
         </div>
       </div>
     );
@@ -63,22 +65,27 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center space-y-6 max-w-sm px-4">
+      <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
+        <div className="grain-overlay" />
+        <div
+          className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[640px] h-[640px] rounded-full opacity-[0.10] blur-3xl"
+          style={{ background: "radial-gradient(circle, var(--primary), transparent 70%)" }}
+        />
+        <div className="relative text-center space-y-7 max-w-sm px-4">
           <div className="flex justify-center">
-            <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/25 flex items-center justify-center shadow-[0_20px_40px_-20px_rgba(0,0,0,0.6)]">
               <Zap className="w-8 h-8 text-primary" />
             </div>
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Automation Hub</h1>
-            <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-              Your AI-powered chatbot agency toolkit. Generate cold emails, knowledge bases, and proposals in seconds.
+            <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">Automation Hub</h1>
+            <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
+              The operations console for the agency — cold outreach, knowledge bases, and proposals, generated in seconds.
             </p>
           </div>
           <a
             href={getLoginUrl()}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors w-full justify-center"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] hover:bg-primary/90 active:scale-[0.98] transition-all w-full justify-center"
           >
             Sign In to Get Started
           </a>
@@ -89,7 +96,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen flex bg-background">
-      {/* Mobile overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/60 z-20 lg:hidden"
@@ -97,21 +103,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-30 w-60 flex flex-col bg-sidebar border-r border-border transition-transform duration-200 lg:translate-x-0 lg:static lg:z-auto",
+          "fixed inset-y-0 left-0 z-30 w-64 flex flex-col bg-sidebar border-r border-sidebar-border transition-transform duration-200 lg:translate-x-0 lg:static lg:z-auto",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        {/* Logo */}
-        <div className="h-16 flex items-center gap-3 px-5 border-b border-border shrink-0">
+        <div className="h-16 flex items-center gap-3 px-5 border-b border-sidebar-border shrink-0">
           <div className="w-8 h-8 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center">
             <Zap className="w-4 h-4 text-primary" />
           </div>
           <div>
-            <p className="font-semibold text-sm text-foreground leading-none">Automation Hub</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Chatbot Agency</p>
+            <p className="font-display font-semibold text-sm text-foreground leading-none tracking-tight">Automation Hub</p>
+            <p className="text-[11px] text-muted-foreground mt-1">Chatbot Agency</p>
           </div>
           <button
             className="ml-auto lg:hidden text-muted-foreground hover:text-foreground"
@@ -121,11 +125,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </button>
         </div>
 
-        {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
+        <nav className="flex-1 px-3 py-5 space-y-5 overflow-y-auto">
           {navSections.map(section => (
             <div key={section.label}>
-              <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+              <p className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/55">
                 {section.label}
               </p>
               <div className="space-y-0.5">
@@ -137,13 +140,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                       href={href}
                       onClick={() => setSidebarOpen(false)}
                       className={cn(
-                        "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                        "relative flex items-center gap-3 pl-3.5 pr-3 py-2 rounded-lg text-sm font-medium transition-colors",
                         active
-                          ? "bg-primary/15 text-primary border border-primary/20"
-                          : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                          ? "text-foreground bg-sidebar-accent"
+                          : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/60"
                       )}
                     >
-                      <Icon className="w-4 h-4 shrink-0" />
+                      {active && (
+                        <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-primary" />
+                      )}
+                      <Icon className={cn("w-4 h-4 shrink-0", active && "text-primary")} />
                       {label}
                     </Link>
                   );
@@ -153,9 +159,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
 
-        {/* User */}
-        <div className="p-3 border-t border-border shrink-0">
-          <div className="flex items-center gap-3 px-2 py-2">
+        <div className="p-3 border-t border-sidebar-border shrink-0">
+          <div className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-sidebar-accent/50 transition-colors">
             <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
               <span className="text-xs font-semibold text-primary">
                 {user?.name?.charAt(0)?.toUpperCase() ?? "U"}
@@ -176,9 +181,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      {/* Main */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Mobile header */}
         <header className="h-14 flex items-center gap-3 px-4 border-b border-border lg:hidden shrink-0 bg-background">
           <button
             onClick={() => setSidebarOpen(true)}
@@ -188,7 +191,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </button>
           <div className="flex items-center gap-2">
             <Zap className="w-4 h-4 text-primary" />
-            <span className="font-semibold text-sm">Automation Hub</span>
+            <span className="font-display font-semibold text-sm">Automation Hub</span>
           </div>
         </header>
 
