@@ -106,23 +106,23 @@ export default function Dashboard() {
 
   return (
     <AppLayout>
-      <div className="p-6 lg:p-10 max-w-6xl mx-auto">
-        {/* Header — left-aligned, asymmetric; not centered */}
-        <div className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center">
-                <Zap className="w-5 h-5 text-primary" />
-              </div>
-              <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground/70">Automation Hub</span>
+      <div className="p-6 lg:p-14 max-w-6xl mx-auto">
+        {/* Header — measured against Obys.agency / Locomotive.ca: large display
+            scale carries the hierarchy at regular weight with tight/negative
+            tracking, not bold + small. Generous vertical room around it. */}
+        <div className="mb-16 lg:mb-20">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center">
+              <Zap className="w-4 h-4 text-primary" />
             </div>
-            <h1 className="font-display text-3xl sm:text-4xl font-semibold tracking-tight text-foreground">
-              The agency, running itself.
-            </h1>
-            <p className="text-muted-foreground text-sm mt-2 max-w-md">
-              Cold outreach, client work, and resources — everything it takes to run a chatbot services agency, in one console.
-            </p>
+            <span className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground/70">Automation Hub</span>
           </div>
+          <h1 className="font-display text-[3.25rem] leading-[0.95] sm:text-[4.5rem] lg:text-[5.5rem] font-normal tracking-[-0.03em] text-foreground max-w-3xl">
+            The agency,<br />running itself.
+          </h1>
+          <p className="text-muted-foreground text-sm mt-6 max-w-md">
+            Cold outreach, client work, and resources — everything it takes to run a chatbot services agency, in one console.
+          </p>
         </div>
 
         {/* Stats — single row data-stream, mono figures */}
