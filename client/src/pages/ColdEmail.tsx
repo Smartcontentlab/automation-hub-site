@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { trpc } from "@/lib/trpc";
-import { CheckCircle2, Download, Loader2, Mail, Plus, Sparkles, Trash2, XCircle } from "lucide-react";
+import { CheckCircle2, Download, Loader2, Mail, Sparkles, XCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -92,14 +92,14 @@ export default function ColdEmail() {
 
   return (
     <AppLayout>
-      <div className="p-6 lg:p-8 max-w-3xl mx-auto">
+      <div className="p-6 lg:p-10 max-w-3xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-9 h-9 rounded-xl bg-blue-400/10 border border-blue-400/20 flex items-center justify-center">
-            <Mail className="w-5 h-5 text-blue-400" />
+          <div className="w-9 h-9 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+            <Mail className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">Cold Email Generator</h1>
+            <h1 className="font-display text-xl font-semibold tracking-tight text-foreground">Cold Email Generator</h1>
             <p className="text-xs text-muted-foreground">Generate personalized outreach emails for local businesses.</p>
           </div>
         </div>
@@ -122,31 +122,28 @@ export default function ColdEmail() {
         {/* Single mode */}
         {mode === "single" && (
           <>
-            <form onSubmit={handleSingleSubmit} className="rounded-xl border border-border bg-card p-6 space-y-5 mb-6">
+            <form onSubmit={handleSingleSubmit} className="rounded-2xl border border-border bg-card p-6 space-y-5 mb-6">
               <div className="space-y-1.5">
                 <Label htmlFor="businessName" className="text-sm font-medium text-foreground">Business Name</Label>
                 <Input id="businessName" placeholder="e.g. Bright Smile Dental" value={form.businessName}
-                  onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
-                  className="bg-input border-border text-foreground placeholder:text-muted-foreground" />
+                  onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))} />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="niche" className="text-sm font-medium text-foreground">Business Niche</Label>
                 <Input id="niche" placeholder="e.g. Dental Office, Real Estate Agent, Plumber" value={form.niche}
-                  onChange={e => setForm(f => ({ ...f, niche: e.target.value }))}
-                  className="bg-input border-border text-foreground placeholder:text-muted-foreground" />
+                  onChange={e => setForm(f => ({ ...f, niche: e.target.value }))} />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="websiteUrl" className="text-sm font-medium text-foreground">Website URL</Label>
                 <Input id="websiteUrl" placeholder="e.g. https://brightsmile.com" value={form.websiteUrl}
-                  onChange={e => setForm(f => ({ ...f, websiteUrl: e.target.value }))}
-                  className="bg-input border-border text-foreground placeholder:text-muted-foreground" />
+                  onChange={e => setForm(f => ({ ...f, websiteUrl: e.target.value }))} />
               </div>
-              <Button type="submit" disabled={singleMutation.isPending} className="w-full gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button type="submit" disabled={singleMutation.isPending} className="w-full gap-2">
                 {singleMutation.isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating...</> : <><Sparkles className="w-4 h-4" /> Generate Cold Email</>}
               </Button>
             </form>
             {singleMutation.isPending && (
-              <div className="rounded-xl border border-border bg-card p-8 flex flex-col items-center gap-3 text-center">
+              <div className="rounded-2xl border border-border bg-card p-8 flex flex-col items-center gap-3 text-center">
                 <Loader2 className="w-6 h-6 text-primary animate-spin" />
                 <p className="text-sm text-muted-foreground">AI is crafting your cold email...</p>
               </div>
@@ -158,7 +155,7 @@ export default function ColdEmail() {
         {/* Bulk mode */}
         {mode === "bulk" && (
           <>
-            <form onSubmit={handleBulkSubmit} className="rounded-xl border border-border bg-card p-6 space-y-5 mb-6">
+            <form onSubmit={handleBulkSubmit} className="rounded-2xl border border-border bg-card p-6 space-y-5 mb-6">
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <Label className="text-sm font-medium text-foreground">Business List</Label>
@@ -169,14 +166,14 @@ export default function ColdEmail() {
                   value={bulkText}
                   onChange={e => setBulkText(e.target.value)}
                   rows={8}
-                  className="bg-input border-border text-foreground placeholder:text-muted-foreground resize-none font-mono text-xs leading-relaxed"
+                  className="resize-none font-mono text-xs leading-relaxed"
                 />
                 <p className="text-xs text-muted-foreground">
                   Format: <code className="bg-muted px-1 rounded text-xs">Business Name, Niche, Website URL</code> — one business per line.
                   {bulkText && ` (${parseBulkText(bulkText).length} valid rows detected)`}
                 </p>
               </div>
-              <Button type="submit" disabled={bulkMutation.isPending} className="w-full gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button type="submit" disabled={bulkMutation.isPending} className="w-full gap-2">
                 {bulkMutation.isPending
                   ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating {bulkProgress ? `${bulkProgress.done}/${bulkProgress.total}` : ""}...</>
                   : <><Sparkles className="w-4 h-4" /> Generate All Emails</>}
@@ -184,7 +181,7 @@ export default function ColdEmail() {
             </form>
 
             {bulkMutation.isPending && (
-              <div className="rounded-xl border border-border bg-card p-8 flex flex-col items-center gap-3 text-center">
+              <div className="rounded-2xl border border-border bg-card p-8 flex flex-col items-center gap-3 text-center">
                 <Loader2 className="w-6 h-6 text-primary animate-spin" />
                 <p className="text-sm text-muted-foreground">Generating emails for all businesses...</p>
                 <p className="text-xs text-muted-foreground">This may take 30–60 seconds depending on batch size.</p>
@@ -197,16 +194,16 @@ export default function ColdEmail() {
                   <p className="text-sm font-medium text-foreground">
                     {bulkResults.filter(r => !r.error).length} of {bulkResults.length} emails generated
                   </p>
-                  <Button onClick={downloadBulkTxt} size="sm" variant="outline" className="gap-2 text-xs border-border text-foreground hover:bg-muted">
+                  <Button onClick={downloadBulkTxt} size="sm" variant="outline" className="gap-2 text-xs">
                     <Download className="w-3.5 h-3.5" /> Download All as .txt
                   </Button>
                 </div>
                 {bulkResults.map((r, i) => (
-                  <div key={i} className="rounded-xl border border-border bg-card overflow-hidden">
+                  <div key={i} className="rounded-2xl border border-border bg-card overflow-hidden">
                     <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-muted/20">
                       {r.error
                         ? <XCircle className="w-4 h-4 text-destructive shrink-0" />
-                        : <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />}
+                        : <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />}
                       <span className="text-sm font-medium text-foreground">{r.businessName}</span>
                       <span className="text-xs text-muted-foreground">— {r.niche}</span>
                     </div>
