@@ -1,15 +1,13 @@
 import AppLayout from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Library, Smile, Home, Wrench, Wind, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 
 interface NicheTemplate {
   niche: string;
-  icon: string;
-  color: string;
-  bg: string;
+  icon: typeof Smile;
   tagline: string;
   systemPrompt: string;
   faqs: string[];
@@ -19,9 +17,7 @@ interface NicheTemplate {
 const TEMPLATES: NicheTemplate[] = [
   {
     niche: "Dental Office",
-    icon: "🦷",
-    color: "text-blue-400",
-    bg: "bg-blue-400/10 border-blue-400/20",
+    icon: Smile,
     tagline: "Appointment booking, insurance questions, and emergency triage",
     systemPrompt: `You are a friendly and professional AI receptionist for [Dental Office Name], a dental practice located in [City, State]. Your name is [Bot Name].
 
@@ -59,9 +55,7 @@ Always be warm, reassuring, and professional. If a patient describes severe pain
   },
   {
     niche: "Real Estate Agent",
-    icon: "🏡",
-    color: "text-emerald-400",
-    bg: "bg-emerald-400/10 border-emerald-400/20",
+    icon: Home,
     tagline: "Lead qualification, property inquiries, and showing scheduling",
     systemPrompt: `You are a professional AI assistant for [Agent/Team Name], a real estate agent/team serving [City/Region]. Your name is [Bot Name].
 
@@ -99,9 +93,7 @@ Be professional, enthusiastic, and knowledgeable. Do not quote specific prices f
   },
   {
     niche: "Plumber",
-    icon: "🔧",
-    color: "text-orange-400",
-    bg: "bg-orange-400/10 border-orange-400/20",
+    icon: Wrench,
     tagline: "Emergency dispatch, job quotes, and appointment booking",
     systemPrompt: `You are a helpful AI dispatcher for [Plumbing Company Name], a licensed plumbing company serving [City/Region]. Your name is [Bot Name].
 
@@ -139,9 +131,7 @@ For active water leaks, burst pipes, sewage backups, or flooding, immediately pr
   },
   {
     niche: "HVAC Company",
-    icon: "❄️",
-    color: "text-cyan-400",
-    bg: "bg-cyan-400/10 border-cyan-400/20",
+    icon: Wind,
     tagline: "Repair dispatch, maintenance plans, and installation quotes",
     systemPrompt: `You are a knowledgeable AI assistant for [HVAC Company Name], a heating and cooling company serving [City/Region]. Your name is [Bot Name].
 
@@ -179,9 +169,7 @@ For no-heat situations in winter or no-cooling situations in extreme heat, prior
   },
   {
     niche: "Med Spa",
-    icon: "✨",
-    color: "text-pink-400",
-    bg: "bg-pink-400/10 border-pink-400/20",
+    icon: Sparkles,
     tagline: "Treatment consultations, booking, and package inquiries",
     systemPrompt: `You are a warm and professional AI concierge for [Med Spa Name], a medical aesthetics spa located in [City, State]. Your name is [Bot Name].
 
@@ -230,7 +218,7 @@ function CopyButton({ text }: { text: string }) {
   return (
     <Button variant="ghost" size="sm" onClick={handleCopy}
       className="h-7 px-2.5 text-xs gap-1.5 text-muted-foreground hover:text-foreground">
-      {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+      {copied ? <Check className="w-3.5 h-3.5 text-primary" /> : <Copy className="w-3.5 h-3.5" />}
       {copied ? "Copied!" : "Copy"}
     </Button>
   );
@@ -248,34 +236,36 @@ export default function Templates() {
 
   return (
     <AppLayout>
-      <div className="p-6 lg:p-8 max-w-4xl mx-auto">
+      <div className="p-6 lg:p-10 max-w-4xl mx-auto">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-9 h-9 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-lg">
-            📚
+          <div className="w-9 h-9 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+            <Library className="w-4.5 h-4.5 text-primary" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">Niche Templates Library</h1>
+            <h1 className="font-display text-xl font-semibold tracking-tight text-foreground">Niche Templates Library</h1>
             <p className="text-xs text-muted-foreground">Pre-built chatbot system prompts, FAQs, and lead flows for your top 5 niches.</p>
           </div>
         </div>
 
         <p className="text-sm text-muted-foreground mb-6 ml-12">
-          Click any template to expand it. Use <strong className="text-foreground">Copy System Prompt</strong> to paste directly into Voiceflow or ManyChat, or <strong className="text-foreground">Use Template</strong> to pre-fill the Knowledge Base Generator.
+          Click any template to expand it. Use <strong className="text-foreground">Copy</strong> to paste directly into Voiceflow or ManyChat, or <strong className="text-foreground">Use Template</strong> to pre-fill the Knowledge Base Generator.
         </p>
 
         <div className="space-y-3">
           {TEMPLATES.map(t => {
             const isOpen = expanded === t.niche;
+            const Icon = t.icon;
             return (
-              <div key={t.niche} className="rounded-xl border border-border bg-card overflow-hidden">
-                {/* Header */}
+              <div key={t.niche} className="rounded-2xl border border-border bg-card overflow-hidden">
                 <div
-                  className="flex items-center gap-3 px-5 py-4 cursor-pointer hover:bg-muted/20 transition-colors"
+                  className="flex items-center gap-4 px-5 py-4 cursor-pointer hover:bg-muted/20 transition-colors"
                   onClick={() => setExpanded(isOpen ? null : t.niche)}
                 >
-                  <span className="text-2xl">{t.icon}</span>
+                  <div className="w-10 h-10 rounded-lg bg-secondary border border-border flex items-center justify-center shrink-0">
+                    <Icon className="w-5 h-5 text-foreground/70" />
+                  </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-foreground text-sm">{t.niche}</h3>
+                    <h3 className="font-display font-semibold text-foreground text-sm tracking-tight">{t.niche}</h3>
                     <p className="text-xs text-muted-foreground mt-0.5">{t.tagline}</p>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
@@ -283,7 +273,7 @@ export default function Templates() {
                       size="sm"
                       variant="outline"
                       onClick={e => { e.stopPropagation(); useTemplate(t.niche); }}
-                      className="h-7 px-3 text-xs border-border text-foreground hover:bg-muted"
+                      className="h-7 px-3 text-xs"
                     >
                       Use Template
                     </Button>
@@ -291,10 +281,8 @@ export default function Templates() {
                   </div>
                 </div>
 
-                {/* Expanded content */}
                 {isOpen && (
                   <div className="border-t border-border divide-y divide-border">
-                    {/* System Prompt */}
                     <div className="p-5">
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">System Prompt</h4>
@@ -305,7 +293,6 @@ export default function Templates() {
                       </pre>
                     </div>
 
-                    {/* FAQs */}
                     <div className="p-5">
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">15 Common FAQs</h4>
@@ -321,7 +308,6 @@ export default function Templates() {
                       </div>
                     </div>
 
-                    {/* Lead Flow */}
                     <div className="p-5">
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Lead Qualification Flow</h4>
