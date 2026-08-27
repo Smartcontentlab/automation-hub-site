@@ -31,18 +31,18 @@ export default function FollowUp() {
 
   return (
     <AppLayout>
-      <div className="p-6 lg:p-8 max-w-3xl mx-auto">
+      <div className="p-6 lg:p-10 max-w-3xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-9 h-9 rounded-xl bg-indigo-400/10 border border-indigo-400/20 flex items-center justify-center">
-            <Mail className="w-5 h-5 text-indigo-400" />
+          <div className="w-9 h-9 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+            <Mail className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">Follow-Up Email Sequence</h1>
+            <h1 className="font-display text-xl font-semibold tracking-tight text-foreground">Follow-Up Email Sequence</h1>
             <p className="text-xs text-muted-foreground">Generate a 3-email follow-up sequence for prospects who did not respond.</p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="rounded-xl border border-border bg-card p-6 space-y-5 mb-6">
+        <form onSubmit={handleSubmit} className="rounded-2xl border border-border bg-card p-6 space-y-5 mb-6">
           <div className="space-y-1.5">
             <Label htmlFor="clientName" className="text-sm font-medium text-foreground">Prospect / Business Name</Label>
             <Input
@@ -50,7 +50,6 @@ export default function FollowUp() {
               placeholder="e.g. Bright Smile Dental"
               value={form.clientName}
               onChange={e => setForm(f => ({ ...f, clientName: e.target.value }))}
-              className="bg-input border-border text-foreground placeholder:text-muted-foreground"
             />
           </div>
           <div className="space-y-1.5">
@@ -65,18 +64,27 @@ export default function FollowUp() {
               value={form.context}
               onChange={e => setForm(f => ({ ...f, context: e.target.value }))}
               rows={6}
-              className="bg-input border-border text-foreground placeholder:text-muted-foreground resize-none"
+              className="resize-none"
             />
           </div>
-          <Button type="submit" disabled={mutation.isPending} className="w-full gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+          <Button type="submit" disabled={mutation.isPending} className="w-full gap-2">
             {mutation.isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating...</> : <><Sparkles className="w-4 h-4" /> Generate 3-Email Sequence</>}
           </Button>
         </form>
 
         {mutation.isPending && (
-          <div className="rounded-xl border border-border bg-card p-8 flex flex-col items-center gap-3 text-center">
+          <div className="rounded-2xl border border-border bg-card p-8 flex flex-col items-center gap-3 text-center">
             <Loader2 className="w-6 h-6 text-primary animate-spin" />
             <p className="text-sm text-muted-foreground">AI is writing your follow-up sequence...</p>
+          </div>
+        )}
+        {!mutation.isPending && !output && (
+          <div className="rounded-2xl border border-dashed border-border p-10 text-center">
+            <Mail className="w-6 h-6 text-muted-foreground/50 mx-auto mb-3" />
+            <p className="text-sm text-foreground font-medium mb-1">No sequence yet</p>
+            <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+              Fill in the prospect and context above to generate a 3-email follow-up sequence.
+            </p>
           </div>
         )}
         {output && !mutation.isPending && <GeneratorOutput content={output} label="3-Email Follow-Up Sequence" />}
