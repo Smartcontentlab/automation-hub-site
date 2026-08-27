@@ -36,18 +36,18 @@ export default function ObjectionHandler() {
 
   return (
     <AppLayout>
-      <div className="p-6 lg:p-8 max-w-3xl mx-auto">
+      <div className="p-6 lg:p-10 max-w-3xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-9 h-9 rounded-xl bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center">
-            <ShieldCheck className="w-5 h-5 text-yellow-400" />
+          <div className="w-9 h-9 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+            <ShieldCheck className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">Objection Handler</h1>
+            <h1 className="font-display text-xl font-semibold tracking-tight text-foreground">Objection Handler</h1>
             <p className="text-xs text-muted-foreground">Turn any sales objection into a confident, human rebuttal script.</p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="rounded-xl border border-border bg-card p-6 space-y-5 mb-6">
+        <form onSubmit={handleSubmit} className="rounded-2xl border border-border bg-card p-6 space-y-5 mb-6">
           <div className="space-y-1.5">
             <Label className="text-sm font-medium text-foreground">Prospect's Objection</Label>
             <Textarea
@@ -55,26 +55,35 @@ export default function ObjectionHandler() {
               value={objection}
               onChange={e => setObjection(e.target.value)}
               rows={4}
-              className="bg-input border-border text-foreground placeholder:text-muted-foreground resize-none"
+              className="resize-none"
             />
             <div className="flex flex-wrap gap-1.5 pt-1">
               {COMMON_OBJECTIONS.map(o => (
                 <button key={o} type="button" onClick={() => setObjection(o)}
-                  className="px-2.5 py-1 rounded-full text-xs border border-border text-muted-foreground hover:border-yellow-400/30 hover:text-foreground transition-colors">
+                  className="px-2.5 py-1 rounded-full text-xs border border-border text-muted-foreground hover:border-primary/30 hover:text-foreground transition-colors">
                   {o}
                 </button>
               ))}
             </div>
           </div>
-          <Button type="submit" disabled={mutation.isPending} className="w-full gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+          <Button type="submit" disabled={mutation.isPending} className="w-full gap-2">
             {mutation.isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating...</> : <><Sparkles className="w-4 h-4" /> Generate Rebuttal Script</>}
           </Button>
         </form>
 
         {mutation.isPending && (
-          <div className="rounded-xl border border-border bg-card p-8 flex flex-col items-center gap-3 text-center">
+          <div className="rounded-2xl border border-border bg-card p-8 flex flex-col items-center gap-3 text-center">
             <Loader2 className="w-6 h-6 text-primary animate-spin" />
             <p className="text-sm text-muted-foreground">AI is crafting your rebuttal...</p>
+          </div>
+        )}
+        {!mutation.isPending && !output && (
+          <div className="rounded-2xl border border-dashed border-border p-10 text-center">
+            <ShieldCheck className="w-6 h-6 text-muted-foreground/50 mx-auto mb-3" />
+            <p className="text-sm text-foreground font-medium mb-1">No rebuttal yet</p>
+            <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+              Type an objection or pick one of the common ones above to get a ready-to-use script.
+            </p>
           </div>
         )}
         {output && !mutation.isPending && <GeneratorOutput content={output} label="Rebuttal Script" />}
